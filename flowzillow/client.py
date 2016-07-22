@@ -1,7 +1,7 @@
 try:
-	from urlparse import urljoin # python 2
+    from urlparse import urljoin  # python 2
 except ImportError:
-	from urllib.parse import urljoin # python 3
+    from urllib.parse import urljoin  # python 3
 
 import requests
 
@@ -32,8 +32,8 @@ class SearchClient(object):
         a block of JSON with all the search results. Since this is an undocumented API not
         all parameters available to this API are of known purpose
 
-        :param tuple latlong1: Geocoords of the upper left point of the rectangular search box
-        :param tuple latlong2: Geocoords of the lower right point of the rectangular search box
+        :param tuple latlong1: Geocoords of the lower-left (SW) point of the rectangular search box
+        :param tuple latlong2: Geocoords of the upper-right (NE) point of the rectangular search box
         :param **kwargs:
         :param spt: Seems to be "homes" by default
         :param rid: Region ID. A region unique number
@@ -74,10 +74,30 @@ class SearchClient(object):
         _validate_response(response)
         return response.json()
 
-    def _make_rect_param(self, latlong1, latlong2):
-        geo1 = map(lambda coord: str(coord).replace(".", ""), reversed(list(latlong1)))
-        geo2 = map(lambda coord: str(coord).replace(".", ""), reversed(list(latlong2)))
-        return ",".join(geo1 + geo2)
+    @staticmethod
+    def _make_rect_param(latlong1, latlong2):
+        """
+        Returns rect coordinates in Zillow's preferred format, ensuring exactly
+        6 significant figures after the decimal and flipping lat and long.
+
+        example:
+            input:  latlong1: (37.832371, -122.354874), latlong2: (37.604031, -123.013657)
+            response: '-122354874,37832371,-123013657,37604031'
+
+        """
+        # Flip lat and long
+        longlat1 = latlong1[::-1]
+        longlat2 = latlong2[::-1]
+
+        # Convert to coordinates strings, ensure 6 digits after decimal point,
+        # and then strip decimals.
+        longlat1_str_list = ['{0:.6f}'.format(c).replace('.', '') for c in longlat1]
+        longlat2_str_list = ['{0:.6f}'.format(c).replace('.', '') for c in longlat2]
+
+        longlat1_str = ','.join(longlat1_str_list)
+        longlat2_str = ','.join(longlat2_str_list)
+
+        return longlat1_str + ',' + longlat2_str
 
     def _make_search_params(self, latlong1, latlong2, **kwargs):
         rect = self._make_rect_param(latlong1, latlong2)

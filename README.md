@@ -13,6 +13,7 @@ Basic usage would look like
     search_client = SearchClient()
     search_client.search((lat1, long1), (lat2, long2))
 
+* (lat1, long1) should be the lower-left coordinates while (lat2, long2) should be the upper-right coordinates.
 Where the input tuples are tuples of latitude and longitudinal coordinates for opposite
 ends of our search rectangle.
 
