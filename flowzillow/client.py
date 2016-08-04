@@ -6,7 +6,7 @@ except ImportError:
 import requests
 
 from flowzillow import constants
-from flowzillow.exceptions import ZillowError
+from flowzillow.exceptions import ZillowError, CaptchaError
 
 
 def _trim_none_values(dict_):
@@ -23,6 +23,8 @@ def _trim_none_values(dict_):
 def _validate_response(response):
     if response.status_code != constants.SUCCESS_CODE:
         raise ZillowError(response)
+    elif '/captcha/' in response.url:
+        raise CaptchaError(response)
 
 
 class SearchClient(object):
