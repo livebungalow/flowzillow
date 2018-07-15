@@ -71,7 +71,8 @@ class SearchClient(object):
         """
         params = self._make_search_params(latlong1, latlong2, **kwargs)
         response = requests.get(
-            urljoin(constants.BASE_URL, "search/GetResults.htm"), params=params
+            urljoin(constants.BASE_URL, "search/GetResults.htm"), params=params,
+            headers={'User-Agent': 'Mozilla/5.0 (X11; ; Linux i686; rv:1.9.2.20) Gecko/20110805'}
         )
         _validate_response(response)
         return response.json()
