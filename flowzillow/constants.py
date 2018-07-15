@@ -3,7 +3,7 @@ try:
 except ImportError:
 	from urllib.parse import urljoin # python 3
 
-BASE_URL = "http://zillow.com/"
+BASE_URL = "https://www.zillow.com/"
 DAYS = "any"
 DS = "all"
 HOME_TYPE = 111111
