@@ -23,7 +23,7 @@ def _trim_none_values(dict_):
 def _validate_response(response):
     if response.status_code != constants.SUCCESS_CODE:
         raise ZillowError(response)
-    elif '/captcha/' in response.url:
+    elif '/captcha' in response.url:
         raise CaptchaError(response)
 
 
